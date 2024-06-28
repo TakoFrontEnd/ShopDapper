@@ -6,6 +6,7 @@
     <h1>首頁</h1>
     <input v-model="OrderID" />
     <button type="submit" class="btn btn-info" v-on:click="getOrderId(OrderID)">搜尋</button>
+    <button type="submit" class="btn btn-success" >新增</button>
     <p>Input Value: {{ OrderID }}</p>
     <br />
     <table class="table table-bordered">
@@ -18,19 +19,36 @@
         </tr>
         </thead>
         <tbody>
-            <tr v-for="(item, index) in orderList" :key="index">
-                <td>{{ item.orderId }}</td>
-                <td>{{item.customerId}}</td>
-                <td>{{item.orderDate}}</td>
-                <td>{{item.shipCountry}}</td>
-                <td>
-                    <button class="btn btn-info btn-sm">View</button>
-                    <button class="btn btn-warning btn-sm">Edit</button>
-                    <button class="btn btn-danger btn-sm">Delete</button>
-                </td>
-            </tr>
+        <tr v-for="(item, index) in orderList" :key="index">
+            <td>{{ item.orderId }}</td>
+            <td>{{item.customerId}}</td>
+            <td>{{item.orderDate}}</td>
+            <td>{{item.shipCountry}}</td>
+            <td>
+                <button class="btn btn-info btn-sm" v-on:click="getDetail(item.orderId)">Detail</button>
+                <button class="btn btn-warning btn-sm">Edit</button>
+                <button class="btn btn-danger btn-sm">Delete</button>
+            </td>
+        </tr>
         </tbody>
     </table>
+    
+    @* 看詳細Modal *@
+    @* v-show 跟 v-if 差別在會不會被移出DOM元素前者會隱藏元素後者會直接移除 *@
+    @* 依照使用頻率高的環境使用v-show *@
+    <div v-show="isModalOpen" class="modal" style="display: block;">
+        <div class="modal-content">
+            <span class="close" v-on:click="closeModal">&times;</span>
+            <p>Order Detail:</p>
+            <p>Order ID: {{ orderDetail.orderId }}</p>
+            <p>Customer ID: {{ orderDetail.customerId }}</p>
+            <p>Order Date: {{ orderDetail.orderDate }}</p>
+            <p>Ship Country: {{ orderDetail.shipCountry }}</p>
+        </div>
+    </div>
+    
+    @* 新增Modal *@
+    
 </div>
 
 

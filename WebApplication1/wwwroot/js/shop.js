@@ -3,16 +3,20 @@
 createApp({
     setup(){
         let orderList = reactive([]);
-        let temp = reactive([]);
+        const orderDetail = ref({});
         const OrderID = ref('');
-
+        const isModalOpen = ref(false);
+        
+        const closeModal = () => {
+            console.log("close : ", isModalOpen.value)
+            isModalOpen.value = false;
+        };
+        
         const getOrderList = () => {
             axios.get('api/crud/GetOrders')
                 .then(response => response.data)
                 .then(getData => {
-                    //console.log("原本:",getData);
                     orderList.splice(0, orderList.length, ...getData);
-                    // console.log("test : ",orderList[0].orderId)
                 })
                 .catch(error => {
                     console.log('Error fetching data:', error);
@@ -32,13 +36,32 @@ createApp({
                 });
         };
         
+        const getDetail = (OrderID) => {
+            axios.get('api/crud/GetOrderId',{
+                params:{OrderID : OrderID}
+            })
+                .then(response => response.data)
+                .then(getData => {
+                    orderDetail.value = getData;
+                    isModalOpen.value = true;
+                })
+                .catch(error => {
+                    console.log('Error fetching data:', error);
+                });
+        }
+        
+        
         onMounted(()=>{
             getOrderList();
         });
         
-        return {OrderID, orderList, getOrderId};
-        
-        
+        return {OrderID, 
+                orderList,
+                orderDetail,
+                getOrderId,
+                getDetail,
+                isModalOpen,
+                closeModal};
     }
 }).mount('#app');
 
