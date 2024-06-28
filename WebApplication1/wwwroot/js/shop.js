@@ -42,5 +42,3 @@ createApp({
     }
 }).mount('#app');
 
-git config user.name "klas9802"
-git config user.email "klas9806@gmail.com"
