@@ -1,0 +1,37 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<div id="app" class="container mt-5">
+    <h1>首頁</h1>
+    <input v-model="OrderID" />
+    <button type="submit" class="btn btn-info" v-on:click="getOrderId(OrderID)">搜尋</button>
+    <p>Input Value: {{ OrderID }}</p>
+    <br />
+    <table class="table table-bordered">
+        <thead>
+        <tr>
+            <th>OrderID</th>
+            <th>CustomerID</th>
+            <th>OrderDate</th>
+            <th>ShipCountry</th>
+        </tr>
+        </thead>
+        <tbody>
+            <tr v-for="(item, index) in orderList" :key="index">
+                <td>{{ item.orderId }}</td>
+                <td>{{item.customerId}}</td>
+                <td>{{item.orderDate}}</td>
+                <td>{{item.shipCountry}}</td>
+                <td>
+                    <button class="btn btn-info btn-sm">View</button>
+                    <button class="btn btn-warning btn-sm">Edit</button>
+                    <button class="btn btn-danger btn-sm">Delete</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+<script src="~/js/shop.js"></script>
