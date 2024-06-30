@@ -12,7 +12,7 @@
     <br />
     <table class="table table-bordered">
         <thead>
-            <tr>00
+            <tr>
                 <th>OrderID</th>
                 <th>CustomerID</th>
                 <th>OrderDate</th>
@@ -27,7 +27,7 @@
                 <td>{{item.shipCountry}}</td>
                 <td>
                     <button class="btn btn-info btn-sm" v-on:click="getDetail(item.orderId)">詳細</button>
-                    <button class="btn btn-warning btn-sm">編輯</button>
+                    <button class="btn btn-warning btn-sm" v-on:click="editOrder(item.orderId)">編輯</button>
                     <button class="btn btn-danger btn-sm">刪除</button>
                 </td>
             </tr>
@@ -56,14 +56,27 @@
             <label>姓名:</label>
             <input type="text" v-model="customerId" />
             <label>下訂日期:</label>
-            <p>{{ orderDate }}</p>
-            <label>Ship Country</label>
+            <input v-model="orderDate" placeholder="{{ orderDate }}" readonly>
+            <label>運送國家:</label>
             <input type="text" v-model="shipCountry" />
-            <label>Ship City</label>
+            <label>運送城市:</label>
             <input type="text" v-model="shipCity" />
-            <label>Ship Address</label>
+            <label>運送地址:</label>
             <input type="text" v-model="shipAddress" />
             <button class="btn btn-success" v-on:click="createOrder(customerId, shipCountry, shipCity, shipAddress, orderDate)">送出</button>
+        </div>
+    </div>
+
+    @* 編輯Modal *@
+    <div v-show="editModalOpen" class="modal" style="display: block;">
+        <div class="modal-content">
+            <span class="close" v-on:click="closeModal">&times;</span>
+            <p>訂單詳細:</p>
+            <p>訂單編號: {{ orderDetail.orderId }}</p>
+            <p>客戶姓名: <input v-model="orderDetail.customerId"></p>
+            <p>下訂日期: <input v-model="orderDetail.orderDate"></p>
+            <p>運送國家: <input v-model="orderDetail.shipCountry"></p>
+            <button class="btn btn-success" v-on:click="">保存更改</button>
         </div>
     </div>
 

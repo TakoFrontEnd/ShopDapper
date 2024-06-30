@@ -63,55 +63,62 @@ namespace WebApplication1.WebApi
 
         [HttpPost]
         //單筆
-        public void CreateOrder(string CustomerID, string ShipCountry, string ShipCity, string ShipAddress, DateTime OrderDate)
+        public IActionResult CreateOrder([FromBody] Order order)
         {
+            if (order == null)
+            {
+                return BadRequest("新增失敗");
+            }
+
             var sql = @"INSERT INTO [Northwind].[dbo].[Orders] 
-                        (CustomerID, ShipCountry, ShipCity, ShipAddress, OrderDate)
-                VALUES (@CustomerID, @ShipCountry, @ShipCity, @ShipAddress,@OrderDate)";
+                        (CustomerID, ShipCountry, ShipCity, ShipAddress)
+                VALUES (@CustomerID, @ShipCountry, @ShipCity, @ShipAddress)";
 
             var parameters = new DynamicParameters();
-            parameters.Add("CustomerID", CustomerID);
-            parameters.Add("ShipCountry", ShipCountry);
-            parameters.Add("ShipCity", ShipCity);
-            parameters.Add("ShipAddress", ShipAddress);
-            parameters.Add("OrderDate", OrderDate);
+            parameters.Add("CustomerID", order.CustomerId);
+            parameters.Add("ShipCountry", order.ShipCountry);
+            parameters.Add("ShipCity", order.ShipCity);
+            parameters.Add("ShipAddress", order.ShipAddress);
 
             using (var conn = new SqlConnection(_connectString))
             {
                 conn.Execute(sql, parameters);
             }
+
+            return Ok("新增成功");
         }
 
 
         //多筆
-        public void CreatePluralOrder(IEnumerable<Order> orders)
-        {
-            var sql = @"INSERT INTO [Northwind].[dbo].[Orders] (CustomerID, ShipCountry, ShipCity, ShipAddress, OrderDate)
-                VALUES (@CustomerID, @ShipCountry, @ShipCity, @ShipAddress,@OrderDate)";
+        //public void CreatePluralOrder(IEnumerable<Order> orders)
+        //{
+        //    var sql = @"INSERT INTO [Northwind].[dbo].[Orders] (CustomerID, ShipCountry, ShipCity, ShipAddress, OrderDate)
+        //        VALUES (@CustomerID, @ShipCountry, @ShipCity, @ShipAddress,@OrderDate)";
 
-            using (var conn = new SqlConnection(_connectString))
-            {
-                conn.Execute(sql, orders);
-            }
-        }
+        //    using (var conn = new SqlConnection(_connectString))
+        //    {
+        //        conn.Execute(sql, orders);
+        //    }
+        //}
 
 
         //編輯
-        public void UpdateOrder(int OrderID, string CustomerID, int EmployeeID, DateTime OrderDate)
+        public void UpdateOrder(int OrderID, string CustomerID, string ShipCountry, string ShipCity, string ShipAddress)
         {
             //先判斷有沒有該訂單
             var sql = @"SELECT OrderID FROM Orders WHERE OrderID = @OrderID";
             var updateSql = @"UPDATE Orders 
-                        SET CustomerID = @CustomerID, 
-                            EmployeeID = @EmployeeID, 
-                            OrderDate = @OrderDate 
+                        SET ShipCountry= @ShipCountry, 
+                            ShipCity= @ShipCity, 
+                            ShipAddress= @ShipAddress
                         WHERE OrderID = @OrderID";
 
             var parameters = new DynamicParameters();
             parameters.Add("OrderID", OrderID);
             parameters.Add("CustomerID", CustomerID);
-            parameters.Add("EmployeeID", EmployeeID);
-            parameters.Add("OrderDate", OrderDate);
+            parameters.Add("ShipCountry", ShipCountry);
+            parameters.Add("ShipCity", ShipCity);
+            parameters.Add("ShipAddress", ShipAddress);
 
             using (var conn = new SqlConnection(_connectString))
             {
@@ -126,6 +133,9 @@ namespace WebApplication1.WebApi
                 }
             }
         }
+
+
+
 
         //刪除
         public void DelectOrder(int OrderID)

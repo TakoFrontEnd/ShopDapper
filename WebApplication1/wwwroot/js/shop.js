@@ -16,15 +16,19 @@ createApp({
         
         const isModalOpen = ref(false);
         const createModalOpen = ref(false);
+        const editModalOpen = ref(false);
 
         const closeModal = () => {
             isModalOpen.value = false;
             createModalOpen.value = false;
+            editModalOpen.value = false;
         };
 
         const openCreateModal = () => {
             createModalOpen.value = true;
         };
+
+        
 
         const getOrderList = () => {
             axios.get('api/crud/GetOrders')
@@ -66,9 +70,8 @@ createApp({
 
         const createOrder = (customerId, shipCountry, shipCity, shipAddress, orderDate) => {
             console.log(customerId, shipCountry, shipCity, shipAddress, orderDate);
-
             axios.post('api/crud/CreateOrder', {
-                CustomerID: customerId,
+                CustomerId: customerId,
                 ShipCountry: shipCountry,
                 ShipCity: shipCity,
                 ShipAddress: shipAddress,
@@ -76,12 +79,35 @@ createApp({
             })
                 .then(response => {
                     console.log("Order created successfully:", response.data);
+                    createModalOpen.value = false;
+                    alert("新增成功");
                 })
                 .catch(error => {
                     console.log('Error creating order:', error);
                 });
         };
 
+
+
+        //開啟編輯功能
+        const editOrder = (OrderID) => {
+            axios.get('api/crud/GetOrderId', {
+                params: { OrderID: OrderID }
+            })
+                .then(response => response.data)
+                .then(getData => {
+                    console.log("開啟編輯");
+                    orderDetail.value = getData;
+                    editModalOpen.value = true;
+                })
+                .catch(error => {
+                    console.log('Error fetching data:', error);
+                });
+        };
+
+        //保存編輯
+        
+        
 
 
         onMounted(() => {
@@ -100,9 +126,11 @@ createApp({
             getOrderId,
             getDetail,
             createOrder,
+            editOrder,
             isModalOpen,
             createModalOpen,
             openCreateModal,
+            editModalOpen,
             closeModal
         };
     }
