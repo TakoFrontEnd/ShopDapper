@@ -1,5 +1,12 @@
 ﻿const { createApp, ref, reactive, onMounted } = Vue;
 
+
+/* 改善點 : 
+    1. 希望能用表格形式傳送數據
+    2. formate形式
+    3. 由新至舊排
+    4. 分頁
+ */
 createApp({
     setup() {
         const OrderID = ref('');
@@ -12,7 +19,15 @@ createApp({
         const shipAddress = ref('');
 
         let orderList = reactive([]);
-        const orderDetail = ref({});
+        const orderDetail = ref({
+            orderId: '',
+            customerId: '',
+            orderDate: '',
+            shipCountry: '',
+            shipCity: '',
+            shipAddress: ''
+        });
+        
         
         const isModalOpen = ref(false);
         const createModalOpen = ref(false);
@@ -81,6 +96,7 @@ createApp({
                     console.log("Order created successfully:", response.data);
                     createModalOpen.value = false;
                     alert("新增成功");
+                    window.location.reload();
                 })
                 .catch(error => {
                     console.log('Error creating order:', error);
@@ -106,7 +122,43 @@ createApp({
         };
 
         //保存編輯
-        
+        const saveChanges = () => {
+            console.log(orderDetail.value.orderId);
+            axios.post('api/crud/UpdateOrder', {
+                OrderID: orderDetail.value.orderId,
+                CustomerID: orderDetail.value.customerId,
+                ShipCountry: orderDetail.value.shipCountry,
+                ShipCity: orderDetail.value.shipCity,
+                ShipAddress: orderDetail.value.shipAddress,
+                /*orderDate: orderDetail.orderDate,*/
+            })
+                .then(response => {
+                    alert('更新成功');
+                    this.editModalOpen = false;
+                    window.location.reload();
+                })
+                .catch(error => {
+                    console.error('保存失败:', error);
+                });
+        };
+
+        //刪除
+        const deleteOrder = (OrderID) => {
+            if (confirm('確認刪除?')) {
+                axios.get('api/crud/DelectOrder', {
+                    params: { OrderID: OrderID }
+                })
+                    .then(response => response.data)
+                    .then(getData => {
+                        window.location.reload();
+                    })
+                    .catch(error => {
+                        console.log('Error fetching data:', error);
+                    });
+            } else {
+                console.log('取消');
+            }  
+        }
         
 
 
@@ -127,6 +179,8 @@ createApp({
             getDetail,
             createOrder,
             editOrder,
+            deleteOrder,
+            saveChanges,
             isModalOpen,
             createModalOpen,
             openCreateModal,

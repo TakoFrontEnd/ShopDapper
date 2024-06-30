@@ -2,7 +2,11 @@
     Layout = "_Layout";
 }
 
-@*BUG LIST : 搜尋為NULL時候畫面要調整為「找不到該訂單」*@
+@*BUG LIST : 
+    1. 搜尋為NULL時候畫面要調整為「找不到該訂單」
+    2. 分頁顯示問題
+    3. 排序表格要能由大到小
+    4. 搜尋指定ID結束後要能回上頁*@
 <div id="app" class="container mt-5">
     <h1>首頁</h1>
     <input v-model="OrderID" />
@@ -28,7 +32,7 @@
                 <td>
                     <button class="btn btn-info btn-sm" v-on:click="getDetail(item.orderId)">詳細</button>
                     <button class="btn btn-warning btn-sm" v-on:click="editOrder(item.orderId)">編輯</button>
-                    <button class="btn btn-danger btn-sm">刪除</button>
+                    <button class="btn btn-danger btn-sm" v-on:click="deleteOrder(item.orderId)">刪除</button>
                 </td>
             </tr>
         </tbody>
@@ -71,12 +75,20 @@
     <div v-show="editModalOpen" class="modal" style="display: block;">
         <div class="modal-content">
             <span class="close" v-on:click="closeModal">&times;</span>
-            <p>訂單詳細:</p>
-            <p>訂單編號: {{ orderDetail.orderId }}</p>
-            <p>客戶姓名: <input v-model="orderDetail.customerId"></p>
-            <p>下訂日期: <input v-model="orderDetail.orderDate"></p>
-            <p>運送國家: <input v-model="orderDetail.shipCountry"></p>
-            <button class="btn btn-success" v-on:click="">保存更改</button>
+            <h2>訂單詳細:</h2>
+            <label>訂單編號:</label>
+            <input type="text" v-model="orderDetail.orderId" readonly />
+            <label>客戶姓名:</label>
+            <input type="text" v-model="orderDetail.customerId" readonly />
+            <label>下訂日期:</label>
+            <input type="text" v-model="orderDetail.orderDate" readonly />
+            <label>運送國家:</label>
+            <input type="text" v-model="orderDetail.shipCountry" />
+            <label>運送城市:</label>
+            <input type="text" v-model="orderDetail.shipCity" />
+            <label>運送地址:</label>
+            <input type="text" v-model="orderDetail.shipAddress" />
+            <button class="btn btn-success" v-on:click="saveChanges">保存更改</button>
         </div>
     </div>
 

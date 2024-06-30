@@ -69,69 +69,68 @@ namespace WebApplication1.WebApi
             {
                 return BadRequest("新增失敗");
             }
-
-            var sql = @"INSERT INTO [Northwind].[dbo].[Orders] 
+            else
+            {
+                var sql = @"INSERT INTO [Northwind].[dbo].[Orders] 
                         (CustomerID, ShipCountry, ShipCity, ShipAddress)
                 VALUES (@CustomerID, @ShipCountry, @ShipCity, @ShipAddress)";
 
-            var parameters = new DynamicParameters();
-            parameters.Add("CustomerID", order.CustomerId);
-            parameters.Add("ShipCountry", order.ShipCountry);
-            parameters.Add("ShipCity", order.ShipCity);
-            parameters.Add("ShipAddress", order.ShipAddress);
+                var parameters = new DynamicParameters();
+                parameters.Add("CustomerID", order.CustomerId);
+                parameters.Add("ShipCountry", order.ShipCountry);
+                parameters.Add("ShipCity", order.ShipCity);
+                parameters.Add("ShipAddress", order.ShipAddress);
 
-            using (var conn = new SqlConnection(_connectString))
-            {
-                conn.Execute(sql, parameters);
+                using (var conn = new SqlConnection(_connectString))
+                {
+                    conn.Execute(sql, parameters);
+                }
             }
-
             return Ok("新增成功");
         }
 
 
-        //多筆
-        //public void CreatePluralOrder(IEnumerable<Order> orders)
-        //{
-        //    var sql = @"INSERT INTO [Northwind].[dbo].[Orders] (CustomerID, ShipCountry, ShipCity, ShipAddress, OrderDate)
-        //        VALUES (@CustomerID, @ShipCountry, @ShipCity, @ShipAddress,@OrderDate)";
 
-        //    using (var conn = new SqlConnection(_connectString))
-        //    {
-        //        conn.Execute(sql, orders);
-        //    }
-        //}
-
-
+        [HttpPost]
         //編輯
-        public void UpdateOrder(int OrderID, string CustomerID, string ShipCountry, string ShipCity, string ShipAddress)
+        public IActionResult UpdateOrder([FromBody] Order order)
         {
-            //先判斷有沒有該訂單
-            var sql = @"SELECT OrderID FROM Orders WHERE OrderID = @OrderID";
-            var updateSql = @"UPDATE Orders 
+
+            if (order == null)
+            {
+                return BadRequest("新增失敗");
+            }
+            else
+            {
+                var sql = @"SELECT OrderID FROM Orders WHERE OrderID = @OrderID";
+                var updateSql = @"UPDATE Orders 
                         SET ShipCountry= @ShipCountry, 
                             ShipCity= @ShipCity, 
                             ShipAddress= @ShipAddress
                         WHERE OrderID = @OrderID";
 
-            var parameters = new DynamicParameters();
-            parameters.Add("OrderID", OrderID);
-            parameters.Add("CustomerID", CustomerID);
-            parameters.Add("ShipCountry", ShipCountry);
-            parameters.Add("ShipCity", ShipCity);
-            parameters.Add("ShipAddress", ShipAddress);
+                var parameters = new DynamicParameters();
+                parameters.Add("OrderID", order.OrderId);
+                parameters.Add("CustomerID", order.CustomerId);
+                parameters.Add("ShipCountry", order.ShipCountry);
+                parameters.Add("ShipCity", order.ShipCity);
+                parameters.Add("ShipAddress", order.ShipAddress);
 
-            using (var conn = new SqlConnection(_connectString))
-            {
-                var query = conn.Query<Order>(sql, parameters);
-                if(query == null)
+                using (var conn = new SqlConnection(_connectString))
                 {
-                    BadRequest("找不到該訂單");
-                }
-                else
-                {
-                    conn.Execute(updateSql, parameters);
+                    //先判斷有沒有該訂單
+                    var query = conn.Query<Order>(sql, parameters);
+                    if (query == null)
+                    {
+                        BadRequest("找不到該訂單");
+                    }
+                    else
+                    {
+                        conn.Execute(updateSql, parameters);
+                    }
                 }
             }
+            return Ok("保存成功");
         }
 
 
