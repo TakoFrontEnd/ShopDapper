@@ -1,17 +1,31 @@
 ﻿const { createApp, ref, reactive, onMounted } = Vue;
 
 createApp({
-    setup(){
+    setup() {
+        const OrderID = ref('');
+        const today = new Date();
+        const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
+        const orderDate = ref(formattedDate);
+        const customerId = ref('');
+        const shipCountry = ref('');
+        const shipCity = ref('');
+        const shipAddress = ref('');
+
         let orderList = reactive([]);
         const orderDetail = ref({});
-        const OrderID = ref('');
+        
         const isModalOpen = ref(false);
-        
+        const createModalOpen = ref(false);
+
         const closeModal = () => {
-            console.log("close : ", isModalOpen.value)
             isModalOpen.value = false;
+            createModalOpen.value = false;
         };
-        
+
+        const openCreateModal = () => {
+            createModalOpen.value = true;
+        };
+
         const getOrderList = () => {
             axios.get('api/crud/GetOrders')
                 .then(response => response.data)
@@ -22,10 +36,10 @@ createApp({
                     console.log('Error fetching data:', error);
                 });
         };
-        
+
         const getOrderId = (OrderID) => {
-            axios.get('api/crud/GetOrderId',{
-                params:{OrderID : OrderID}
+            axios.get('api/crud/GetOrderId', {
+                params: { OrderID: OrderID }
             })
                 .then(response => response.data)
                 .then(getData => {
@@ -35,10 +49,10 @@ createApp({
                     console.log('Error fetching data:', error);
                 });
         };
-        
+
         const getDetail = (OrderID) => {
-            axios.get('api/crud/GetOrderId',{
-                params:{OrderID : OrderID}
+            axios.get('api/crud/GetOrderId', {
+                params: { OrderID: OrderID }
             })
                 .then(response => response.data)
                 .then(getData => {
@@ -48,20 +62,48 @@ createApp({
                 .catch(error => {
                     console.log('Error fetching data:', error);
                 });
-        }
-        
-        
-        onMounted(()=>{
+        };
+
+        const createOrder = (customerId, shipCountry, shipCity, shipAddress, orderDate) => {
+            console.log(customerId, shipCountry, shipCity, shipAddress, orderDate);
+
+            axios.post('api/crud/CreateOrder', {
+                CustomerID: customerId,
+                ShipCountry: shipCountry,
+                ShipCity: shipCity,
+                ShipAddress: shipAddress,
+                OrderDate: orderDate
+            })
+                .then(response => {
+                    console.log("Order created successfully:", response.data);
+                })
+                .catch(error => {
+                    console.log('Error creating order:', error);
+                });
+        };
+
+
+
+        onMounted(() => {
             getOrderList();
         });
-        
-        return {OrderID, 
-                orderList,
-                orderDetail,
-                getOrderId,
-                getDetail,
-                isModalOpen,
-                closeModal};
+
+        return {
+            OrderID,
+            orderDate,
+            customerId,
+            shipCountry,
+            shipCity,
+            shipAddress,
+            orderList,
+            orderDetail,
+            getOrderId,
+            getDetail,
+            createOrder,
+            isModalOpen,
+            createModalOpen,
+            openCreateModal,
+            closeModal
+        };
     }
 }).mount('#app');
-
