@@ -9,11 +9,8 @@
     4. 搜尋指定ID結束後要能回上頁*@
 <div id="app" class="container mt-5">
     <h1>首頁</h1>
-    <input v-model="OrderID" />
-    <button type="submit" class="btn btn-info" v-on:click="getOrderId(OrderID)">搜尋</button>
     <button type="submit" class="btn btn-success" v-on:click="openCreateModal">新增</button>
-    <button type="submit" class="btn btn-success" v-on:click="paginations(5,10)">測試分頁</button>
-    <p>Input Value: {{ OrderID }}</p>
+    @*<button type="submit" class="btn btn-success" v-on:click="paginations(5,10)">測試分頁</button>*@
     <br />
 
     <table id="OrderTable" class="table table-bordered" ></table>

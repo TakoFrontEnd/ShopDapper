@@ -1,14 +1,5 @@
 ﻿const { createApp, ref, reactive, onMounted } = Vue;
 
-
-/* 改善點 : 
-    1. 希望能用表格形式傳送數據
-    2. formate形式
-    3. 由新至舊排
-    4. 分頁 => 套bootstrip table + axios後端
- */
-
-
 createApp({
     setup() {
         const OrderID = ref('');
@@ -29,8 +20,7 @@ createApp({
             shipCity: '',
             shipAddress: ''
         });
-        
-        
+
         const isModalOpen = ref(false);
         const createModalOpen = ref(false);
         const editModalOpen = ref(false);
@@ -50,12 +40,22 @@ createApp({
             { field: 'customerId', title: 'Customer ID', sortable: true },
             { field: 'orderDate', title: 'Order Date', sortable: true },
             { field: 'shippedDate', title: 'Shipped Date', sortable: true },
-            { field: 'freight', title: 'Freight', sortable: true }
+            { field: 'freight', title: 'Freight', sortable: true },
+            {
+                field: 'actions',
+                title: 'Actions',
+                formatter: (value, row) => {
+                    return `
+                        <button class="btn btn-primary btn-sm edit-btn" data-id="${row.orderId}">編輯</button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="${row.orderId}">刪除</button>
+                        <button class="btn btn-info btn-sm detail-btn" data-id="${row.orderId}">詳細</button>
+                    `;
+                }
+            }
         ]);
 
-        //分頁pageSize應該是可以調整的 
         const options = ref({
-            search: false,
+            search: true,
             showColumns: false,
             pagination: true,
             pageSize: 10,
@@ -77,60 +77,29 @@ createApp({
                 });
         };
 
-
         const initTable = () => {
-            console.log(options);
             $("#OrderTable").bootstrapTable({
                 columns: columns.value,
                 pagination: options.value.pagination,
                 search: options.value.search,
                 showColumns: options.value.showColumns,
                 sortOrder: options.value.sortOrder,
-                data: orderList
-            });
-        };
-
-
-        
-        //分頁
-        const paginations = (pageNumber, sizeValue) => {
-            console.log("傳入:", pageNumber, sizeValue)
-            let size = pageSize[0];
-            console.log(size);
-            if (sizeValue === size ) {
-                size = size
-            } else if (sizeValue === pageSize[1]) {
-                size = pageSize[1]
-            } else {
-                size = pageSize[2]
-            }
-            axios.get('api/crud/GetOrdersPaged', {
-                params: {
-                    pageNumber: pageNumber,
-                    pageSize: size
+                data: orderList,
+                onPostBody: () => {
+                    $('.edit-btn').click(function () {
+                        const orderId = $(this).data('id');
+                        editOrder(orderId);
+                    });
+                    $('.delete-btn').click(function () {
+                        const orderId = $(this).data('id');
+                        deleteOrder(orderId);
+                    });
+                    $('.detail-btn').click(function () {
+                        const orderId = $(this).data('id');
+                        getDetail(orderId);
+                    });
                 }
-            })
-                .then(response => response.data)
-                .then(getData => {
-                    console.log(getData);
-                })
-                .catch(error => {
-                    console.error("There was an error fetching the data!", error);
-                });
-        };
-
-
-        const getOrderList = () => {
-            axios.get('api/crud/GetOrders')
-                .then(response => response.data)
-                .then(getData => {
-                    orderList.splice(0, orderList.length, ...getData);
-                    
-                    console.log(getData);
-                })
-                .catch(error => {
-                    console.log('Error fetching data:', error);
-                });
+            });
         };
 
         const getOrderId = (OrderID) => {
@@ -161,7 +130,6 @@ createApp({
         };
 
         const createOrder = (customerId, shipCountry, shipCity, shipAddress, orderDate) => {
-            console.log(customerId, shipCountry, shipCity, shipAddress, orderDate);
             axios.post('api/crud/CreateOrder', {
                 CustomerId: customerId,
                 ShipCountry: shipCountry,
@@ -170,7 +138,6 @@ createApp({
                 OrderDate: orderDate
             })
                 .then(response => {
-                    console.log("Order created successfully:", response.data);
                     createModalOpen.value = false;
                     alert("新增成功");
                     window.location.reload();
@@ -180,16 +147,12 @@ createApp({
                 });
         };
 
-
-
-        //開啟編輯功能
         const editOrder = (OrderID) => {
             axios.get('api/crud/GetOrderId', {
                 params: { OrderID: OrderID }
             })
                 .then(response => response.data)
                 .then(getData => {
-                    console.log("開啟編輯");
                     orderDetail.value = getData;
                     editModalOpen.value = true;
                 })
@@ -198,20 +161,17 @@ createApp({
                 });
         };
 
-        //保存編輯
         const saveChanges = () => {
-            console.log(orderDetail.value.orderId);
             axios.post('api/crud/UpdateOrder', {
                 OrderID: orderDetail.value.orderId,
                 CustomerID: orderDetail.value.customerId,
                 ShipCountry: orderDetail.value.shipCountry,
                 ShipCity: orderDetail.value.shipCity,
-                ShipAddress: orderDetail.value.shipAddress,
-                /*orderDate: orderDetail.orderDate,*/
+                ShipAddress: orderDetail.value.shipAddress
             })
                 .then(response => {
                     alert('更新成功');
-                    this.editModalOpen = false;
+                    editModalOpen.value = false;
                     window.location.reload();
                 })
                 .catch(error => {
@@ -219,7 +179,6 @@ createApp({
                 });
         };
 
-        //刪除
         const deleteOrder = (OrderID) => {
             if (confirm('確認刪除?')) {
                 axios.get('api/crud/DelectOrder', {
@@ -235,12 +194,9 @@ createApp({
             } else {
                 console.log('取消');
             }
-        }
-
-
+        };
 
         onMounted(() => {
-            //getOrderList();
             initTable();
             fetchOrders();
         });
@@ -262,7 +218,6 @@ createApp({
             editOrder,
             deleteOrder,
             saveChanges,
-            paginations,
             isModalOpen,
             createModalOpen,
             openCreateModal,
