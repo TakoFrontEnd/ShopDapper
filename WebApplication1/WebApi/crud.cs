@@ -60,6 +60,34 @@ namespace WebApplication1.WebApi
             }
         }
 
+        //分頁
+        public IEnumerable<Order> GetOrdersPaged(int pageNumber, int pageSize)
+        {
+            var sql = @"
+                        SELECT * 
+                        FROM (
+                            SELECT *, ROW_NUMBER() OVER (ORDER BY OrderID) AS RowNum
+                            FROM Orders
+                        ) AS Result
+                        WHERE RowNum >= @StartRow AND RowNum <= @EndRow
+                        ORDER BY OrderID";
+
+            // 計算開始行和結束行
+            var StartRow = (pageNumber - 1) * pageSize + 1;
+            var EndRow = pageNumber * pageSize;
+
+            // 設置參數
+            var parameters = new DynamicParameters();
+            parameters.Add("StartRow", StartRow);
+            parameters.Add("EndRow", EndRow);
+
+            using (var conn = new SqlConnection(_connectString))
+            {
+                return conn.Query<Order>(sql, parameters);
+            }
+        }
+
+
 
         [HttpPost]
         //單筆
@@ -139,11 +167,8 @@ namespace WebApplication1.WebApi
         //刪除
         public void DelectOrder(int OrderID)
         {
-            var sql = @"UPDATE Orders 
-                        SET CustomerID = NULL, 
-                            EmployeeID = NULL, 
-                            OrderDate = NULL 
-                        WHERE OrderID = @OrderID";
+            var sql = @"DELETE FROM [Northwind].[dbo].[Order Details] WHERE OrderID=@OrderID";
+            var sql2 = @"DELETE FROM Orders WHERE OrderID=@OrderID";
 
             var parameters = new DynamicParameters();
             parameters.Add("OrderID", OrderID);
@@ -158,6 +183,7 @@ namespace WebApplication1.WebApi
                 else
                 {
                     conn.Execute(sql, parameters);
+                    conn.Execute(sql2, parameters);
                 }
             }
         }
