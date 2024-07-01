@@ -19,7 +19,6 @@ createApp({
         const shipCountry = ref('');
         const shipCity = ref('');
         const shipAddress = ref('');
-        const pageNumber = ref('');
 
         let orderList = reactive([]);
         const orderDetail = ref({
@@ -30,8 +29,8 @@ createApp({
             shipCity: '',
             shipAddress: ''
         });
-        let pageSize = reactive([5, 10, 15]);
-
+        
+        
         const isModalOpen = ref(false);
         const createModalOpen = ref(false);
         const editModalOpen = ref(false);
@@ -59,22 +58,14 @@ createApp({
             search: false,
             showColumns: false,
             pagination: true,
-            pageSize: 20,
+            pageSize: 10,
             pageList: [10, 25, 50, 100],
             sortOrder: 'desc'
         });
 
-        const currentPage = ref('1');
-        const currentSize = ref(options.value.pageSize);
-
         const fetchOrders = (pageNumber, pageSize) => {
             console.log("傳入:", pageNumber, pageSize);
-            axios.get('api/crud/GetOrdersPaged', {
-                params: {
-                    pageNumber: pageNumber,
-                    pageSize: pageSize
-                }
-            })
+            axios.get('api/crud/GetOrders')
                 .then(response => response.data)
                 .then(getData => {
                     console.log(getData);
@@ -88,21 +79,14 @@ createApp({
 
 
         const initTable = () => {
+            console.log(options);
             $("#OrderTable").bootstrapTable({
                 columns: columns.value,
                 pagination: options.value.pagination,
                 search: options.value.search,
                 showColumns: options.value.showColumns,
-                pageSize: options.value.pageSize,
-                pageList: options.value.pageList,
                 sortOrder: options.value.sortOrder,
-                data: orderList.value,
-                sidePagination: 'server',
-                onPageChange: (pageNumber, pageSize) => {
-                    currentPage.value = pageNumber;
-                    currentSize.value = pageSize;
-                    fetchOrders(pageNumber, pageSize);
-                }
+                data: orderList
             });
         };
 
@@ -257,8 +241,8 @@ createApp({
 
         onMounted(() => {
             //getOrderList();
-            fetchOrders(currentPage.value, currentSize.value);
             initTable();
+            fetchOrders();
         });
 
         return {
@@ -270,7 +254,6 @@ createApp({
             shipCountry,
             shipCity,
             shipAddress,
-            pageNumber,
             orderList,
             orderDetail,
             getOrderId,
