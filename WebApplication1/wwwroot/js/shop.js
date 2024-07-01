@@ -60,6 +60,7 @@ createApp({
             pagination: true,
             pageSize: 10,
             pageList: [10, 25, 50, 100],
+            smartDisplay: false,
             sortOrder: 'desc'
         });
 
@@ -100,6 +101,7 @@ createApp({
                     });
                 }
             });
+            console.log("test : ",options.value);
         };
 
         const getOrderId = (OrderID) => {
