@@ -24,8 +24,8 @@ a {
   border-color: #1861ac;
 }
 
-button{
-  margin: 5px;
+.btn{
+    margin-left: 10px;
 }
 
 /* Sticky footer styles

@@ -5,8 +5,10 @@
     1. 希望能用表格形式傳送數據
     2. formate形式
     3. 由新至舊排
-    4. 分頁
+    4. 分頁 => 套bootstrip table + axios後端
  */
+
+
 createApp({
     setup() {
         const OrderID = ref('');
@@ -17,6 +19,7 @@ createApp({
         const shipCountry = ref('');
         const shipCity = ref('');
         const shipAddress = ref('');
+        const pageNumber = ref('');
 
         let orderList = reactive([]);
         const orderDetail = ref({
@@ -27,8 +30,8 @@ createApp({
             shipCity: '',
             shipAddress: ''
         });
-        
-        
+        let pageSize = reactive([5, 10, 15]);
+
         const isModalOpen = ref(false);
         const createModalOpen = ref(false);
         const editModalOpen = ref(false);
@@ -43,13 +46,103 @@ createApp({
             createModalOpen.value = true;
         };
 
+        const columns = ref([
+            { field: 'orderId', title: 'Order ID', sortable: true },
+            { field: 'customerId', title: 'Customer ID', sortable: true },
+            { field: 'orderDate', title: 'Order Date', sortable: true },
+            { field: 'shippedDate', title: 'Shipped Date', sortable: true },
+            { field: 'freight', title: 'Freight', sortable: true }
+        ]);
+
+        //分頁pageSize應該是可以調整的 
+        const options = ref({
+            search: false,
+            showColumns: false,
+            pagination: true,
+            pageSize: 20,
+            pageList: [10, 25, 50, 100],
+            sortOrder: 'desc'
+        });
+
+        const currentPage = ref('1');
+        const currentSize = ref(options.value.pageSize);
+
+        const fetchOrders = (pageNumber, pageSize) => {
+            console.log("傳入:", pageNumber, pageSize);
+            axios.get('api/crud/GetOrdersPaged', {
+                params: {
+                    pageNumber: pageNumber,
+                    pageSize: pageSize
+                }
+            })
+                .then(response => response.data)
+                .then(getData => {
+                    console.log(getData);
+                    orderList.splice(0, orderList.length, ...getData);
+                    $('#OrderTable').bootstrapTable('load', orderList);
+                })
+                .catch(error => {
+                    console.error("There was an error fetching the data!", error);
+                });
+        };
+
+
+        const initTable = () => {
+            $("#OrderTable").bootstrapTable({
+                columns: columns.value,
+                pagination: options.value.pagination,
+                search: options.value.search,
+                showColumns: options.value.showColumns,
+                pageSize: options.value.pageSize,
+                pageList: options.value.pageList,
+                sortOrder: options.value.sortOrder,
+                data: orderList.value,
+                sidePagination: 'server',
+                onPageChange: (pageNumber, pageSize) => {
+                    currentPage.value = pageNumber;
+                    currentSize.value = pageSize;
+                    fetchOrders(pageNumber, pageSize);
+                }
+            });
+        };
+
+
         
+        //分頁
+        const paginations = (pageNumber, sizeValue) => {
+            console.log("傳入:", pageNumber, sizeValue)
+            let size = pageSize[0];
+            console.log(size);
+            if (sizeValue === size ) {
+                size = size
+            } else if (sizeValue === pageSize[1]) {
+                size = pageSize[1]
+            } else {
+                size = pageSize[2]
+            }
+            axios.get('api/crud/GetOrdersPaged', {
+                params: {
+                    pageNumber: pageNumber,
+                    pageSize: size
+                }
+            })
+                .then(response => response.data)
+                .then(getData => {
+                    console.log(getData);
+                })
+                .catch(error => {
+                    console.error("There was an error fetching the data!", error);
+                });
+        };
+
 
         const getOrderList = () => {
             axios.get('api/crud/GetOrders')
                 .then(response => response.data)
                 .then(getData => {
                     orderList.splice(0, orderList.length, ...getData);
+                    
+                    console.log(getData);
                 })
                 .catch(error => {
                     console.log('Error fetching data:', error);
@@ -157,22 +250,27 @@ createApp({
                     });
             } else {
                 console.log('取消');
-            }  
+            }
         }
-        
+
 
 
         onMounted(() => {
-            getOrderList();
+            //getOrderList();
+            fetchOrders(currentPage.value, currentSize.value);
+            initTable();
         });
 
         return {
+            columns,
+            options,
             OrderID,
             orderDate,
             customerId,
             shipCountry,
             shipCity,
             shipAddress,
+            pageNumber,
             orderList,
             orderDetail,
             getOrderId,
@@ -181,6 +279,7 @@ createApp({
             editOrder,
             deleteOrder,
             saveChanges,
+            paginations,
             isModalOpen,
             createModalOpen,
             openCreateModal,

@@ -12,31 +12,12 @@
     <input v-model="OrderID" />
     <button type="submit" class="btn btn-info" v-on:click="getOrderId(OrderID)">搜尋</button>
     <button type="submit" class="btn btn-success" v-on:click="openCreateModal">新增</button>
+    <button type="submit" class="btn btn-success" v-on:click="paginations(5,10)">測試分頁</button>
     <p>Input Value: {{ OrderID }}</p>
     <br />
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>OrderID</th>
-                <th>CustomerID</th>
-                <th>OrderDate</th>
-                <th>ShipCountry</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="(item, index) in orderList" :key="index">
-                <td>{{ item.orderId }}</td>
-                <td>{{item.customerId}}</td>
-                <td>{{item.orderDate}}</td>
-                <td>{{item.shipCountry}}</td>
-                <td>
-                    <button class="btn btn-info btn-sm" v-on:click="getDetail(item.orderId)">詳細</button>
-                    <button class="btn btn-warning btn-sm" v-on:click="editOrder(item.orderId)">編輯</button>
-                    <button class="btn btn-danger btn-sm" v-on:click="deleteOrder(item.orderId)">刪除</button>
-                </td>
-            </tr>
-        </tbody>
-    </table>
+
+    <table id="OrderTable" class="table table-bordered"></table>
+
 
     @* 看詳細Modal *@
     @* v-show 跟 v-if 差別在會不會被移出DOM元素前者會隱藏元素後者會直接移除 *@

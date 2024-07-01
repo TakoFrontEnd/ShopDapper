@@ -41,7 +41,7 @@ namespace WebApplication1.WebApi
         {
             using (var conn = new SqlConnection(_connectString))
             {
-                return conn.Query<Order>("SELECT * FROM Orders WHERE CustomerID IS NOT NULL");
+                return conn.Query<Order>("SELECT OrderID, CustomerID, OrderDate, ShippedDate, Freight  FROM Orders WHERE CustomerID IS NOT NULL");
             }
         }
 
