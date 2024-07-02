@@ -19,7 +19,8 @@
     @* 看詳細Modal *@
     @* v-show 跟 v-if 差別在會不會被移出DOM元素前者會隱藏元素後者會直接移除 *@
     @* 依照使用頻率高的環境使用v-show *@
-    <div v-show="isModalOpen" class="modal" style="display: block;">
+<div v-show="isModalOpen" class="modal" style="display: block;">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <span class="close" v-on:click="closeModal">&times;</span>
             <p>訂單詳細:</p>
@@ -29,28 +30,33 @@
             <p>運送國家: {{ orderDetail.shipCountry }}</p>
         </div>
     </div>
+</div>
 
     @* 新增Modal *@
     <div v-show="createModalOpen" class="modal" style="display: block;">
-        <div class="modal-content">
-            <span class="close" v-on:click="closeModal">&times;</span>
-            <h2>新增訂單:</h2>
-            <label>姓名:</label>
-            <input type="text" v-model="customerId" />
-            <label>下訂日期:</label>
-            <input v-model="orderDate" placeholder="{{ orderDate }}" readonly>
-            <label>運送國家:</label>
-            <input type="text" v-model="shipCountry" />
-            <label>運送城市:</label>
-            <input type="text" v-model="shipCity" />
-            <label>運送地址:</label>
-            <input type="text" v-model="shipAddress" />
-            <button class="btn btn-success" v-on:click="createOrder(customerId, shipCountry, shipCity, shipAddress, orderDate)">送出</button>
+        <div class="modal-dialog modal-sm modal-dialog-centered">
+            <div class="modal-content modal-sm">
+                <span class="close" v-on:click="closeModal">&times;</span>
+                <h2>新增訂單:</h2>
+                <label>姓名:</label>
+                <input type="text" v-model="customerId" />
+                <label>下訂日期:</label>
+                <input v-model="orderDate" placeholder="{{ orderDate }}" readonly>
+                <label>運送國家:</label>
+                <input type="text" v-model="shipCountry" />
+                <label>運送城市:</label>
+                <input type="text" v-model="shipCity" />
+                <label>運送地址:</label>
+                <input type="text" v-model="shipAddress" />
+                <br />
+                <button class="btn btn-success" v-on:click="createOrder(customerId, shipCountry, shipCity, shipAddress, orderDate)">送出</button>
+            </div>
         </div>
     </div>
 
     @* 編輯Modal *@
-    <div v-show="editModalOpen" class="modal" style="display: block;">
+<div v-show="editModalOpen" class="modal" style="display: block;">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
             <span class="close" v-on:click="closeModal">&times;</span>
             <h2>訂單詳細:</h2>
@@ -69,6 +75,7 @@
             <button class="btn btn-success" v-on:click="saveChanges">保存更改</button>
         </div>
     </div>
+</div>
 
 </div>
 
