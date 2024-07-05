@@ -9,8 +9,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using WebApplication1.Data;
-using YourNamespace.Context;
+using Northwind.DataAccess.Data;
 
 namespace WebApplication1
 {
