@@ -12,8 +12,9 @@ namespace Northwind.DataAccess.Repository
     {
         IEnumerable<T> GetAll();
         T Get(int entity);
-        IActionResult Add(T entity);
+        void Add([FromBody] T entity);
         void Remove(int T);
-        IActionResult Edit(T entity);
+        IActionResult Update(T entity);
+        void Save();
     }
 }

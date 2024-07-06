@@ -2,6 +2,7 @@ A:\FrontEnd\ShopDapper\Northwind.Untility\bin\Debug\net5.0\Northwind.Untility.de
 A:\FrontEnd\ShopDapper\Northwind.Untility\bin\Debug\net5.0\Northwind.Untility.dll
 A:\FrontEnd\ShopDapper\Northwind.Untility\bin\Debug\net5.0\ref\Northwind.Untility.dll
 A:\FrontEnd\ShopDapper\Northwind.Untility\bin\Debug\net5.0\Northwind.Untility.pdb
+A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.csproj.AssemblyReference.cache
 A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.GeneratedMSBuildEditorConfig.editorconfig
 A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.AssemblyInfoInputs.cache
 A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.AssemblyInfo.cs
