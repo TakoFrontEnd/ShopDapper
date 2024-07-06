@@ -1,0 +1,11 @@
+A:\FrontEnd\ShopDapper\Northwind.Untility\bin\Debug\net5.0\Northwind.Untility.deps.json
+A:\FrontEnd\ShopDapper\Northwind.Untility\bin\Debug\net5.0\Northwind.Untility.dll
+A:\FrontEnd\ShopDapper\Northwind.Untility\bin\Debug\net5.0\ref\Northwind.Untility.dll
+A:\FrontEnd\ShopDapper\Northwind.Untility\bin\Debug\net5.0\Northwind.Untility.pdb
+A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.GeneratedMSBuildEditorConfig.editorconfig
+A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.AssemblyInfoInputs.cache
+A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.AssemblyInfo.cs
+A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.csproj.CoreCompileInputs.cache
+A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.dll
+A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\ref\Northwind.Untility.dll
+A:\FrontEnd\ShopDapper\Northwind.Untility\obj\Debug\net5.0\Northwind.Untility.pdb

@@ -13,4 +13,10 @@
       </PackageReference>
     </ItemGroup>
 
+    <ItemGroup>
+      <ProjectReference Include="..\Northwind.DataAccess\Northwind.DataAccess.csproj" />
+      <ProjectReference Include="..\Northwind.Models\Northwind.Models.csproj" />
+      <ProjectReference Include="..\Northwind.Untility\Northwind.Untility.csproj" />
+    </ItemGroup>
+
 </Project>

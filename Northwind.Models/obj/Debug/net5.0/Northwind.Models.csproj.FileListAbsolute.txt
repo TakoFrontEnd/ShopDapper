@@ -1,0 +1,11 @@
+A:\FrontEnd\ShopDapper\Northwind.Models\bin\Debug\net5.0\Northwind.Models.deps.json
+A:\FrontEnd\ShopDapper\Northwind.Models\bin\Debug\net5.0\Northwind.Models.dll
+A:\FrontEnd\ShopDapper\Northwind.Models\bin\Debug\net5.0\ref\Northwind.Models.dll
+A:\FrontEnd\ShopDapper\Northwind.Models\bin\Debug\net5.0\Northwind.Models.pdb
+A:\FrontEnd\ShopDapper\Northwind.Models\obj\Debug\net5.0\Northwind.Models.GeneratedMSBuildEditorConfig.editorconfig
+A:\FrontEnd\ShopDapper\Northwind.Models\obj\Debug\net5.0\Northwind.Models.AssemblyInfoInputs.cache
+A:\FrontEnd\ShopDapper\Northwind.Models\obj\Debug\net5.0\Northwind.Models.AssemblyInfo.cs
+A:\FrontEnd\ShopDapper\Northwind.Models\obj\Debug\net5.0\Northwind.Models.csproj.CoreCompileInputs.cache
+A:\FrontEnd\ShopDapper\Northwind.Models\obj\Debug\net5.0\Northwind.Models.dll
+A:\FrontEnd\ShopDapper\Northwind.Models\obj\Debug\net5.0\ref\Northwind.Models.dll
+A:\FrontEnd\ShopDapper\Northwind.Models\obj\Debug\net5.0\Northwind.Models.pdb

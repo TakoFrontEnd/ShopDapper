@@ -4,7 +4,8 @@ using Dapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;
-using YourNamespace.Models;
+using Northwind.Models.Models;
+
 
 namespace WebApplication1.WebApi
 {
