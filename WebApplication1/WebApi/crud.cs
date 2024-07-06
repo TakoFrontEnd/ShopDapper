@@ -31,6 +31,7 @@ namespace WebApplication1.WebApi
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Connection failed: {ex.Message}");
+                    var t = 0;
                 }
             }
         }
