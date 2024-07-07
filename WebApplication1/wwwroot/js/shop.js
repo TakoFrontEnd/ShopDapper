@@ -2,7 +2,7 @@
 
 createApp({
     setup() {
-        const OrderID = ref('');
+        const OrderID = ref();
         const today = new Date();
         const formattedDate = `${today.getFullYear()}-${String(today.getMonth() + 1).padStart(2, '0')}-${String(today.getDate()).padStart(2, '0')}`;
         const orderDate = ref(formattedDate);
@@ -137,10 +137,9 @@ createApp({
 
         //刪除
         const deleteOrder = (OrderID) => {
+            console.log(OrderID);
             if (confirm('確認刪除?')) {
-                axios.get('api/order/DelectOrder', {
-                    params: { OrderID: OrderID }
-                })
+                axios.post(`api/order/DeleteOrder?OrderID=${OrderID}`)
                     .then(response => response.data)
                     .then(getData => {
                         window.location.reload();

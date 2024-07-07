@@ -22,5 +22,12 @@ namespace WebApplication1.WebApi
             return _orderRepository.GetAllOrders();
         }
 
+
+        [HttpPost]
+        public void DeleteOrder(int orderId)
+        {
+            _orderRepository.DeletectOrder(orderId);   
+        }
+
     }
 }

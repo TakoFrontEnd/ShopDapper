@@ -38,14 +38,14 @@ namespace Northwind.DataAccess
             _dbConnection.Execute(sql, parameters);
         }
 
-        public void DeletectOrder(int OrderID)
+        public void DeletectOrder(int orderId)
         {
             var sql = @"DELETE FROM [Northwind].[dbo].[Order Details] WHERE OrderID=@OrderID";
             var sql2 = @"DELETE FROM Orders WHERE OrderID=@OrderID";
             var sql3 = @"SELECT * FROM Orders WHERE OrderID=@OrderID";
 
             var parameters = new DynamicParameters();
-            parameters.Add("OrderID", OrderID);
+            parameters.Add("OrderID", orderId);
 
             var query = _dbConnection.Query<Order>(sql3, parameters);
             if (query == null)
@@ -55,6 +55,7 @@ namespace Northwind.DataAccess
             }
             else
             {
+                var t = 0;
                 _dbConnection.Execute(sql, parameters);
                 _dbConnection.Execute(sql2, parameters);
             }
