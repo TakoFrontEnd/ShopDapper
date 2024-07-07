@@ -55,7 +55,6 @@ namespace Northwind.DataAccess
             }
             else
             {
-                var t = 0;
                 _dbConnection.Execute(sql, parameters);
                 _dbConnection.Execute(sql2, parameters);
             }
