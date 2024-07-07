@@ -1,12 +1,5 @@
 ﻿const { createApp, ref, reactive, onMounted } = Vue;
 
-
-/* 改善點 : 
-    1. 希望能用表格形式傳送數據
-    2. formate形式
-    3. 由新至舊排
-    4. 分頁
- */
 createApp({
     setup() {
         const OrderID = ref('');
@@ -46,7 +39,7 @@ createApp({
         
 
         const getOrderList = () => {
-            axios.get('api/crud/GetOrders')
+            axios.get('api/order/GetAllOrders')
                 .then(response => response.data)
                 .then(getData => {
                     orderList.splice(0, orderList.length, ...getData);
@@ -57,7 +50,7 @@ createApp({
         };
 
         const getOrderId = (OrderID) => {
-            axios.get('api/crud/GetOrderId', {
+            axios.get('api/order/GetOrderId', {
                 params: { OrderID: OrderID }
             })
                 .then(response => response.data)
@@ -70,7 +63,7 @@ createApp({
         };
 
         const getDetail = (OrderID) => {
-            axios.get('api/crud/GetOrderId', {
+            axios.get('api/order/GetOrderId', {
                 params: { OrderID: OrderID }
             })
                 .then(response => response.data)
@@ -85,7 +78,7 @@ createApp({
 
         const createOrder = (customerId, shipCountry, shipCity, shipAddress, orderDate) => {
             console.log(customerId, shipCountry, shipCity, shipAddress, orderDate);
-            axios.post('api/crud/CreateOrder', {
+            axios.post('api/order/CreateOrder', {
                 CustomerId: customerId,
                 ShipCountry: shipCountry,
                 ShipCity: shipCity,
@@ -107,7 +100,7 @@ createApp({
 
         //開啟編輯功能
         const editOrder = (OrderID) => {
-            axios.get('api/crud/GetOrderId', {
+            axios.get('api/order/GetOrderId', {
                 params: { OrderID: OrderID }
             })
                 .then(response => response.data)
@@ -124,7 +117,7 @@ createApp({
         //保存編輯
         const saveChanges = () => {
             console.log(orderDetail.value.orderId);
-            axios.post('api/crud/UpdateOrder', {
+            axios.post('api/order/UpdateOrder', {
                 OrderID: orderDetail.value.orderId,
                 CustomerID: orderDetail.value.customerId,
                 ShipCountry: orderDetail.value.shipCountry,
@@ -145,7 +138,7 @@ createApp({
         //刪除
         const deleteOrder = (OrderID) => {
             if (confirm('確認刪除?')) {
-                axios.get('api/crud/DelectOrder', {
+                axios.get('api/order/DelectOrder', {
                     params: { OrderID: OrderID }
                 })
                     .then(response => response.data)

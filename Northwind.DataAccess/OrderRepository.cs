@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Northwind.DataAccess.Data;
 using Northwind.DataAccess.Repository;
 using Northwind.Models.Models;
@@ -14,47 +15,92 @@ using System.Threading.Tasks;
 
 namespace Northwind.DataAccess
 {
-    public class OrderRepository<T> : IRepository<T> where T : class
+    public class OrderRepository : IOrderRepository
     {
-        private readonly ApplicationDbContext _db;
-        private readonly string _connectionString;
+        private readonly IDbConnection _dbConnection;
 
-        public OrderRepository(ApplicationDbContext db)
+        public OrderRepository(IConfiguration configuration)
         {
-            _db = db;
-            _connectionString = _db.Database.GetDbConnection().ConnectionString;
+            string connectionString = configuration.GetConnectionString("Northwind");
+            _dbConnection = new SqlConnection(connectionString);
         }
 
-        
-
-        public void Add([FromBody] T entity)
+        public void CreateOrder([FromBody]  Order order)
         {
-            throw new NotImplementedException();
+            var sql = @"INSERT INTO [Northwind].[dbo].[Orders] 
+                        (CustomerID, ShipCountry, ShipCity, ShipAddress)
+                VALUES (@CustomerID, @ShipCountry, @ShipCity, @ShipAddress)";
+            var parameters = new DynamicParameters();
+            parameters.Add("CustomerID", order.CustomerId);
+            parameters.Add("ShipCountry", order.ShipCountry);
+            parameters.Add("ShipCity", order.ShipCity);
+            parameters.Add("ShipAddress", order.ShipAddress);
+            _dbConnection.Execute(sql, parameters);
         }
 
-        public T Get(int entity)
+        public void DeletectOrder(int OrderID)
         {
-            throw new NotImplementedException();
+            var sql = @"DELETE FROM [Northwind].[dbo].[Order Details] WHERE OrderID=@OrderID";
+            var sql2 = @"DELETE FROM Orders WHERE OrderID=@OrderID";
+            var sql3 = @"SELECT * FROM Orders WHERE OrderID=@OrderID";
+
+            var parameters = new DynamicParameters();
+            parameters.Add("OrderID", OrderID);
+
+            var query = _dbConnection.Query<Order>(sql3, parameters);
+            if (query == null)
+            {
+                _dbConnection.Close();
+                _dbConnection.Dispose();
+            }
+            else
+            {
+                _dbConnection.Execute(sql, parameters);
+                _dbConnection.Execute(sql2, parameters);
+            }
+            
         }
 
-        public IEnumerable<T> GetAll()
+        public IEnumerable<Order> GetAllOrders()
         {
-            throw new NotImplementedException();
+            return _dbConnection.Query<Order>("SELECT * FROM Orders WHERE CustomerID IS NOT NULL");
         }
 
-        public void Remove(int T)
+        public Order GetOrderById(int OrderID)
         {
-            throw new NotImplementedException();
+            var sql = @"SELECT * FROM Orders WHERE OrderID = @OrderID AND CustomerID IS NOT NULL";
+            var parameters = new DynamicParameters();
+            parameters.Add("OrderID", OrderID);
+            return _dbConnection.QueryFirstOrDefault<Order>(sql, parameters);
         }
 
-        public void Save()
+        public void UpdateOrder([FromBody] Order order)
         {
-            throw new NotImplementedException();
-        }
+            var sql = @"SELECT OrderID FROM Orders WHERE OrderID = @OrderID";
+            var updateSql = @"UPDATE Orders 
+                        SET ShipCountry= @ShipCountry, 
+                            ShipCity= @ShipCity, 
+                            ShipAddress= @ShipAddress
+                        WHERE OrderID = @OrderID";
 
-        public IActionResult Update(T entity)
-        {
-            throw new NotImplementedException();
+            var parameters = new DynamicParameters();
+            parameters.Add("OrderID", order.OrderId);
+            parameters.Add("CustomerID", order.CustomerId);
+            parameters.Add("ShipCountry", order.ShipCountry);
+            parameters.Add("ShipCity", order.ShipCity);
+            parameters.Add("ShipAddress", order.ShipAddress);
+
+            var query = _dbConnection.Query<Order>(sql, parameters);
+            if (query == null)
+            {
+                _dbConnection.Close();
+                _dbConnection.Dispose();
+            }
+            else
+            {
+                _dbConnection.Execute(updateSql, parameters);
+            }
+
         }
     }
 }

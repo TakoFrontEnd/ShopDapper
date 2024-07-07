@@ -9,11 +9,11 @@ using Northwind.Models.Models;
 
 namespace WebApplication1.Controllers
 {
-    public class ShopController : Controller
+    public class OrderController : Controller
     {
         private readonly ILogger<HomeController> _logger;
 
-        public ShopController(ILogger<HomeController> logger)
+        public OrderController(ILogger<HomeController> logger)
         {
             _logger = logger;
         }

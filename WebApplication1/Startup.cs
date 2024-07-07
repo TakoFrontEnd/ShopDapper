@@ -1,15 +1,12 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Northwind.DataAccess;
 using Northwind.DataAccess.Data;
+using Northwind.DataAccess.Repository;
 
 namespace WebApplication1
 {
@@ -26,6 +23,7 @@ namespace WebApplication1
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddScoped<IOrderRepository, OrderRepository>();
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(Configuration.GetConnectionString("Northwind")));
         }
@@ -55,7 +53,7 @@ namespace WebApplication1
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Shop}/{action=Index}/{id?}");
+                    pattern: "{controller=Order}/{action=Index}/{id?}");
             });
         }
     }
