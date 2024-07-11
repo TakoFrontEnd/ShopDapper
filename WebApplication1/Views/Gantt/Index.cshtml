@@ -1,0 +1,8 @@
+﻿<div id="app">
+    <input type="datetime-local" v-model="startTime" placeholder="Start Time">
+    <input type="datetime-local" v-model="endTime" placeholder="End Time">
+    <button v-on:click="applyTimeRange">Apply Time Range</button>
+    <canvas ref="myChart"></canvas>
+</div>
+
+<script src="~/js/Gantt.js"></script>

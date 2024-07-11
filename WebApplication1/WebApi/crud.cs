@@ -12,8 +12,10 @@ namespace WebApplication1.WebApi
     [Route("api/[controller]/[action]")]
     public class CrudController : ControllerBase
     {
+
         private readonly string _connectString;
 
+        //方法注入
         public CrudController(IConfiguration configuration)
         {
             _connectString = configuration.GetConnectionString("Northwind");
