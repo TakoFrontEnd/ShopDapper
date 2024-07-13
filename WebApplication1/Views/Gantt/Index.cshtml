@@ -1,8 +1,22 @@
-﻿<div id="app">
-    <input type="datetime-local" v-model="startTime" placeholder="Start Time">
-    <input type="datetime-local" v-model="endTime" placeholder="End Time">
-    <button v-on:click="applyTimeRange">Apply Time Range</button>
+﻿@{
+    Layout = "_Layout";
+}
+
+<div id="app">
+    <div class="input-group">
+        <input type="datetime-local" class="form-control" v-model="startTime" placeholder="Start Time">
+        <input type="datetime-local" class="form-control" v-model="endTime" placeholder="End Time">
+        <button class="btn btn-primary" v-on:click="applyTimeRange">搜尋</button>
+    </div>
     <canvas ref="myChart"></canvas>
 </div>
 
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@2.2.5/dist/chartjs-plugin-dragdata.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@latest"></script>
 <script src="~/js/Gantt.js"></script>

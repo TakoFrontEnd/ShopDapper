@@ -25,7 +25,7 @@ namespace WebApplication1.WebApi
         {
             var startTime = Convert.ToDateTime(OrderDate);
             var endTime = Convert.ToDateTime(RequiredDate);
-            var sql = @"SELECT o.OrderID,o.OrderDate,o.RequiredDate,(od.UnitPrice * od.Quantity * 1-(Od.Discount))AS 'price'
+            var sql = @"SELECT o.OrderID,o.OrderDate,o.RequiredDate,(od.UnitPrice * od.Quantity * 1-(Od.Discount))AS 'price',OrderStatus,OrderStatusID
                         FROM Orders o
                         LEFT JOIN [Order Details] Od On o.OrderID = Od.OrderID
                         WHERE o.OrderDate >= @OrderDate AND o.RequiredDate < @RequiredDate";

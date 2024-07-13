@@ -11,15 +11,21 @@
     methods: {
         applyTimeRange() {
             if (this.startTime && this.endTime) {
-                this.fetchData();
+                // You can handle the logic of the time range application here
+                console.log('Start Time:', this.startTime);
+                console.log('End Time:', this.endTime);
+                this.fetchGanttData();
+
+            } else {
+                alert('請選時間範圍');
             }
         },
-        createChart(datasets) {
+
+        updateChart(datasets) {
+            const ctx = this.$refs.myChart.getContext('2d');
             if (this.chartInstance != null) {
                 this.chartInstance.destroy();
             }
-
-            const ctx = this.$refs.myChart.getContext('2d');
 
             this.chartInstance = new Chart(ctx, {
                 type: 'bar',
@@ -36,10 +42,8 @@
                         x: {
                             position: 'bottom',
                             type: 'time',
-                            parser: 'YYYY-MM-DD',
-                            tooltipFormat: 'yyyy-MM-DD HH:mm:ss.SSS',
                             time: {
-                                unit: 'minute',
+                                unit: 'day', // 這裡調整為 'day' 以適應較大的時間範圍
                                 displayFormats: {
                                     millisecond: 'HH:mm:ss.SSS',
                                     second: 'HH:mm:ss',
@@ -57,6 +61,7 @@
                         y: {
                             stacked: false,
                             beginAtZero: true,
+                            labels: datasets.map(d => d.label)
                         }
                     },
                     plugins: {
@@ -79,30 +84,37 @@
                 }
             });
         },
-        fetchData() {
-            if (!this.paused) {
-                const params = {
-                    OrderDate: this.startTime,
-                    RequiredDate: this.endTime
-                };
-                axios.get('api/Gantt/GetGanttDate', { params })
-                    .then(response => {
-                        const transformedData = this.GetChartDataSet(response.data);
-                        //this.createChart(transformedData);
-                        console.log(transformedData);
-                    })
-                    .catch(error => {
-                        console.log('Error fetching data:', error);
-                    });
+
+
+
+        //取後端
+        fetchGanttData() {
+            if (this.startTime && this.endTime) {
+                axios.get('api/Gantt/GetGanttDate', {
+                    params: {
+                        OrderDate: this.startTime,
+                        RequiredDate: this.endTime
+                    }
+                })
+                .then(response => {
+                    console.log(response.data);
+                    this.GetChartDataSet(response.data);
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                });
+            } else {
+                alert('請選時間範圍');
             }
         },
+        //處理數據
         GetChartDataSet(StatesDatas) {
             let data = [];
             StatesDatas.forEach(d => {
-                if (!data[d.DeviceStateId]) {
-                    data[d.DeviceStateId] = [];
+                if (!data[d.OrderStatusID]) {
+                    data[d.OrderStatusID] = [];
                 }
-                data[d.DeviceStateId].push({
+                data[d.OrderStatusID].push({
                     x: [d.OrderDate, d.RequiredDate],
                     y: d.OrderID,
                     backgroundColor: 'rgba(75, 192, 192, 0.2)',
@@ -123,10 +135,13 @@
                 });
             });
 
-            return datasets;
+            console.log(datasets);
+            this.updateChart(datasets);
+            return datasets
         },
-        togglePause() {
-            this.paused = !this.paused;
-        }
+
+    },
+    mounted() {
+        this.updateChart([]);
     }
 }).mount('#app');
