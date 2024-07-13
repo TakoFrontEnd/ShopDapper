@@ -61,7 +61,7 @@
                             time: {
                                 unit: 'day',
                                 displayFormats: {
-                                    day: 'MMM d',
+                                    day: 'MMM d, yyyy',
                                     month: 'MMM yyyy',
                                     year: 'yyyy'
                                 }
@@ -94,8 +94,8 @@
                                     enabled: true
                                 },
                                 mode: 'x'
-                            }
-                        }
+                            },
+                        },
                     }
                 }
             });
