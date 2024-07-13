@@ -5,24 +5,40 @@
             chartInstance: null,
             paused: false,
             startTime: '',
-            endTime: ''
+            endTime: '',
+            customers: ['ERNSH', 'SUPRD', 'WELLI', 'OTTIK', 'FOLKO'],
+            selectedCustomer: 'ERNSH', // 初始選中的客戶
+            allData: [] // 存儲所有客戶數據
         };
     },
     methods: {
         applyTimeRange() {
             if (this.startTime && this.endTime) {
-                // You can handle the logic of the time range application here
                 console.log('Start Time:', this.startTime);
                 console.log('End Time:', this.endTime);
                 this.fetchGanttData();
-
             } else {
                 alert('請選時間範圍');
             }
         },
-
         updateChart(datasets) {
-            const ctx = this.$refs.myChart.getContext('2d');
+            if (!datasets || !datasets.length) {
+                console.error('Invalid datasets:', datasets);
+                return;
+            }
+
+            const canvas = this.$refs.myChart;
+            if (!canvas) {
+                console.error('Canvas element not found');
+                return;
+            }
+
+            const ctx = canvas.getContext('2d');
+            if (!ctx) {
+                console.error('Unable to get context for myChart');
+                return;
+            }
+
             if (this.chartInstance != null) {
                 this.chartInstance.destroy();
             }
@@ -43,12 +59,8 @@
                             position: 'bottom',
                             type: 'time',
                             time: {
-                                unit: 'day', // 這裡調整為 'day' 以適應較大的時間範圍
+                                unit: 'day',
                                 displayFormats: {
-                                    millisecond: 'HH:mm:ss.SSS',
-                                    second: 'HH:mm:ss',
-                                    minute: 'HH:mm',
-                                    hour: 'HH:mm',
                                     day: 'MMM d',
                                     month: 'MMM yyyy',
                                     year: 'yyyy'
@@ -59,12 +71,16 @@
                             }
                         },
                         y: {
-                            stacked: false,
+                            stacked: true,
                             beginAtZero: true,
-                            labels: datasets.map(d => d.label)
+                            labels: [...new Set(datasets.flatMap(dataset => dataset.data.map(d => d.y)))] // 顯示所有客戶ID
                         }
                     },
                     plugins: {
+                        legend: {
+                            display: false,
+                            position: 'top'
+                        },
                         zoom: {
                             pan: {
                                 enabled: true,
@@ -84,62 +100,88 @@
                 }
             });
         },
-
-
-
-        //取後端
         fetchGanttData() {
             if (this.startTime && this.endTime) {
                 axios.get('api/Gantt/GetGanttDate', {
                     params: {
                         OrderDate: this.startTime,
-                        RequiredDate: this.endTime
+                        RequiredDate: this.endTime,
+                        CustomerID: this.selectedCustomer
                     }
                 })
-                .then(response => {
-                    console.log(response.data);
-                    this.GetChartDataSet(response.data);
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
+                    .then(response => {
+                        console.log(response.data);
+                        this.allData = response.data; // 存儲所有客戶數據
+                        this.filterCustomerData();
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                    });
             } else {
                 alert('請選時間範圍');
             }
         },
-        //處理數據
+        filterCustomerData() {
+            const filteredData = this.allData.filter(d => d.CustomerID === this.selectedCustomer);
+            this.GetChartDataSet(filteredData);
+        },
         GetChartDataSet(StatesDatas) {
-            let data = [];
+            const statusColorMap = {
+                0: { backgroundColor: 'rgba(75, 192, 192, 0.2)', borderColor: 'rgba(75, 192, 192, 1)' },
+                1: { backgroundColor: 'rgba(192, 75, 192, 0.2)', borderColor: 'rgba(192, 75, 192, 1)' },
+                2: { backgroundColor: 'rgba(192, 192, 75, 0.2)', borderColor: 'rgba(192, 192, 75, 1)' },
+                default: { backgroundColor: 'rgba(75, 192, 192, 0.2)', borderColor: 'rgba(75, 192, 192, 1)' }
+            };
+
+            const statusLabelMap = {
+                0: '揀貨中',
+                1: '已完成',
+                2: '運送中',
+                default: '未知狀態'
+            };
+
+            let customerData = {};
+
             StatesDatas.forEach(d => {
-                if (!data[d.OrderStatusID]) {
-                    data[d.OrderStatusID] = [];
+                if (!customerData[d.CustomerID]) {
+                    customerData[d.CustomerID] = [];
                 }
-                data[d.OrderStatusID].push({
+
+                const { backgroundColor, borderColor } = statusColorMap[d.OrderStatusID] || statusColorMap.default;
+                const label = statusLabelMap[d.OrderStatusID] || statusLabelMap.default;
+
+                customerData[d.CustomerID].push({
                     x: [d.OrderDate, d.RequiredDate],
-                    y: d.OrderID,
-                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    borderColor: 'rgba(75, 192, 192, 1)',
+                    y: d.CustomerID,
+                    backgroundColor: backgroundColor,
+                    borderColor: borderColor,
                     borderWidth: 2,
+                    label: label
                 });
             });
 
             let datasets = [];
-            Object.keys(data).forEach(key => {
-                datasets.push({
-                    label: `Order ID ${key}`,
-                    data: data[key],
-                    borderColor: data[key][0].borderColor,
-                    backgroundColor: data[key][0].backgroundColor,
-                    borderWidth: 2,
-                    barPercentage: 0.8
+            Object.keys(customerData).forEach(customerID => {
+                customerData[customerID].forEach(item => {
+                    datasets.push({
+                        label: item.label,
+                        data: [item],
+                        backgroundColor: item.backgroundColor,
+                        borderColor: item.borderColor,
+                        borderWidth: 2,
+                        barPercentage: 0.8
+                    });
                 });
             });
 
             console.log(datasets);
             this.updateChart(datasets);
-            return datasets
+            return datasets;
         },
-
+        selectCustomer(customer) {
+            this.selectedCustomer = customer;
+            this.fetchGanttData();
+        }
     },
     mounted() {
         this.updateChart([]);

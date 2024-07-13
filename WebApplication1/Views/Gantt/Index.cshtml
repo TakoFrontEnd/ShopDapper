@@ -1,15 +1,64 @@
 ﻿@{
     Layout = "_Layout";
 }
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+    }
 
-<div id="app">
-    <div class="input-group">
-        <input type="datetime-local" class="form-control" v-model="startTime" placeholder="Start Time">
-        <input type="datetime-local" class="form-control" v-model="endTime" placeholder="End Time">
-        <button class="btn btn-primary" v-on:click="applyTimeRange">搜尋</button>
+    .chartMenu {
+        width: 100vw;
+        height: 40px;
+        background: #1A1A1A;
+        color: rgba(54, 162, 235, 1);
+    }
+
+        .chartMenu p {
+            padding: 10px;
+            font-size: 20px;
+        }
+
+    .chartCard {
+        width: 50vw;
+        height: calc(70vh - 40px);
+        background: rgba(54, 162, 235, 0.2);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chartBox {
+        width: 900px;
+        padding: 20px;
+        border-radius: 20px;
+        border: solid 3px rgba(54, 162, 235, 1);
+        background: white;
+    }
+</style>
+
+<div id="app" class="chartCard">
+    <div class="chartBox">
+        <canvas ref="myChart"></canvas>
+        <div class="mt-3">
+            <div class="input-group">
+                <input type="datetime-local" v-model="startTime" class="form-control input-sm" placeholder="開始時間">
+                <div class="input-group-prepend">
+                    <span class="input-group-text">~</span>
+                </div>
+                <input type="datetime-local" v-model="endTime" class="form-control input-sm" placeholder="結束時間">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" v-on:click="applyTimeRange">搜尋</button>
+                </div>
+            </div>
+        </div>
+        <div class="mt-3">
+            <button v-for="customer in customers" :key="customer"  v-on:click="selectCustomer(customer)" class="btn btn-secondary">{{ customer }}</button>
+        </div>
     </div>
-    <canvas ref="myChart"></canvas>
 </div>
+
 
 
 <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.prod.js"></script>

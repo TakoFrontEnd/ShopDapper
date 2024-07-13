@@ -21,18 +21,19 @@ namespace WebApplication1.WebApi
         }
 
         [HttpGet]
-        public IEnumerable<Object> GetGanttDate(string OrderDate, string RequiredDate)
+        public IEnumerable<Object> GetGanttDate(string OrderDate, string RequiredDate, string CustomerID)
         {
             var startTime = Convert.ToDateTime(OrderDate);
             var endTime = Convert.ToDateTime(RequiredDate);
-            var sql = @"SELECT o.OrderID,o.OrderDate,o.RequiredDate,(od.UnitPrice * od.Quantity * 1-(Od.Discount))AS 'price',OrderStatus,OrderStatusID
+            var sql = @"SELECT o.OrderID,o.OrderDate,o.RequiredDate,(od.UnitPrice * od.Quantity * 1-(Od.Discount))AS 'price',OrderStatus,OrderStatusID, CustomerID
                         FROM Orders o
                         LEFT JOIN [Order Details] Od On o.OrderID = Od.OrderID
-                        WHERE o.OrderDate >= @OrderDate AND o.RequiredDate < @RequiredDate";
+                        WHERE o.OrderDate >= @OrderDate AND o.RequiredDate < @RequiredDate AND　CustomerID = @CustomerID";
 
             var parameters = new {
                 OrderDate = startTime,
-                RequiredDate = endTime
+                RequiredDate = endTime,
+                CustomerID = CustomerID
             };
 
             using (var conn = new SqlConnection(_connectString))
