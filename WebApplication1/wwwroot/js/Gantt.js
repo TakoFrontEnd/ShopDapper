@@ -6,9 +6,10 @@
             paused: false,
             startTime: '',
             endTime: '',
-            customers: ['ERNSH', 'SUPRD', 'WELLI', 'OTTIK', 'FOLKO'],
+            customers: ['ERNSH', 'SUPRD', 'WELLI', 'OTTIK', 'LEHMS'],
             selectedCustomer: 'ERNSH',
-            allData: []
+            allData: [],
+            intervalId: null
         };
     },
     methods: {
@@ -19,6 +20,16 @@
                 this.fetchGanttData();
             } else {
                 alert('請選時間範圍');
+            }
+        },
+        toggleUpdate() {
+            if (this.intervalId) {
+                clearInterval(this.intervalId);
+                this.intervalId = null;
+                console.log('更新已暫停');
+            } else {
+                this.intervalId = setInterval(this.fetchGanttData, 1000);
+                console.log('開始自動更新數據');
             }
         },
         updateChart(datasets) {
