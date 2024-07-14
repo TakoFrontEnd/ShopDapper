@@ -7,8 +7,8 @@
             startTime: '',
             endTime: '',
             customers: ['ERNSH', 'SUPRD', 'WELLI', 'OTTIK', 'FOLKO'],
-            selectedCustomer: 'ERNSH', // 初始選中的客戶
-            allData: [] // 存儲所有客戶數據
+            selectedCustomer: 'ERNSH',
+            allData: []
         };
     },
     methods: {
@@ -58,12 +58,12 @@
                         x: {
                             position: 'bottom',
                             type: 'time',
-                            min: '1996-01-01', // 设置X轴的最小日期
-                            max: '1998-12-31', // 设置X轴的最大日期
+                            min: '1996-01-01',
+                            max: '1998-12-31',
                             time: {
                                 unit: 'day',
                                 displayFormats: {
-                                    day: 'MMM d, yyyy',  // 显示格式为 年 月 日
+                                    day: 'MMM d, yyyy',
                                     month: 'MMM yyyy',
                                     year: 'yyyy'
                                 }
@@ -75,7 +75,7 @@
                         y: {
                             stacked: true,
                             beginAtZero: true,
-                            labels: [...new Set(datasets.flatMap(dataset => dataset.data.map(d => d.y)))] // 显示所有客户ID
+                            labels: [...new Set(datasets.flatMap(dataset => dataset.data.map(d => d.y)))]
                         }
                     },
                     plugins: {
@@ -98,20 +98,20 @@
                                 mode: 'x',
                                 drag: {
                                     enabled: true,
-                                    modifierKey: 'shift',  // 设置按住 Shift 键时启用拖拽
+                                    modifierKey: 'shift',
                                     mode: 'x',
                                     onDragStart: function ({ chart }) {
-                                        console.log('拖拽开始', chart);
+                                        console.log('拖拽開始', chart);
                                     },
                                     onDrag: function ({ chart }) {
                                         console.log('拖拽中', chart);
                                     },
                                     onDragEnd: function ({ chart, event }) {
-                                        console.log('拖拽结束', chart, event);
+                                        console.log('拖拽結束', chart, event);
                                         const xScale = chart.scales['x'];
                                         const start = xScale.getValueForPixel(event.dragStartX);
                                         const end = xScale.getValueForPixel(event.dragEndX);
-                                        alert(`选择范围: ${new Date(start).toISOString()} - ${new Date(end).toISOString()}`);
+                                        alert(`選擇範圍: ${new Date(start).toISOString()} - ${new Date(end).toISOString()}`);
                                     }
                                 }
                             },
@@ -130,14 +130,14 @@
                                         content: '▲',
                                         backgroundColor: 'rgba(255, 255, 255, 0.1)',
                                         font: {
-                                            size: 45,  
-                                            weight: 'bold' 
+                                            size: 45,
+                                            weight: 'bold'
                                         },
                                         color: 'red',
                                         position: 'start',
                                         yAdjust: 30,
                                         z: 10
-                                    }
+                                    },
                                 },
                                 line2: {
                                     type: 'line',
@@ -156,12 +156,12 @@
                                         },
                                         color: 'red',
                                         position: 'end',
-                                        yAdjust: -30
-                                    }
+                                        yAdjust: -30,
+                                        z: 10
+                                    },
                                 }
                             }
-                        }  
-                        
+                        }
                     }
                 }
             });
@@ -177,14 +177,14 @@
                 })
                     .then(response => {
                         console.log(response.data);
-                        this.allData = response.data; // 存儲所有客戶數據
+                        this.allData = response.data;
                         this.filterCustomerData();
                     })
                     .catch(error => {
                         console.error('Error fetching data:', error);
                     });
             } else {
-                alert('請選時間範圍');
+                //alert('請選時間範圍');
             }
         },
         filterCustomerData() {
@@ -249,7 +249,13 @@
             this.fetchGanttData();
         }
     },
+    beforeUnmount() {
+        if (this.intervalId) {
+            clearInterval(this.intervalId);
+        }
+    },
     mounted() {
         this.updateChart([]);
+        this.intervalId = setInterval(this.fetchGanttData, 1000);
     }
 }).mount('#app');
