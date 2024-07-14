@@ -58,10 +58,12 @@
                         x: {
                             position: 'bottom',
                             type: 'time',
+                            min: '1996-01-01', // 设置X轴的最小日期
+                            max: '1998-12-31', // 设置X轴的最大日期
                             time: {
                                 unit: 'day',
                                 displayFormats: {
-                                    day: 'MMM d, yyyy',
+                                    day: 'MMM d, yyyy',  // 显示格式为 年 月 日
                                     month: 'MMM yyyy',
                                     year: 'yyyy'
                                 }
@@ -73,7 +75,7 @@
                         y: {
                             stacked: true,
                             beginAtZero: true,
-                            labels: [...new Set(datasets.flatMap(dataset => dataset.data.map(d => d.y)))] // 顯示所有客戶ID
+                            labels: [...new Set(datasets.flatMap(dataset => dataset.data.map(d => d.y)))] // 显示所有客户ID
                         }
                     },
                     plugins: {
@@ -93,9 +95,73 @@
                                 pinch: {
                                     enabled: true
                                 },
-                                mode: 'x'
+                                mode: 'x',
+                                drag: {
+                                    enabled: true,
+                                    modifierKey: 'shift',  // 设置按住 Shift 键时启用拖拽
+                                    mode: 'x',
+                                    onDragStart: function ({ chart }) {
+                                        console.log('拖拽开始', chart);
+                                    },
+                                    onDrag: function ({ chart }) {
+                                        console.log('拖拽中', chart);
+                                    },
+                                    onDragEnd: function ({ chart, event }) {
+                                        console.log('拖拽结束', chart, event);
+                                        const xScale = chart.scales['x'];
+                                        const start = xScale.getValueForPixel(event.dragStartX);
+                                        const end = xScale.getValueForPixel(event.dragEndX);
+                                        alert(`选择范围: ${new Date(start).toISOString()} - ${new Date(end).toISOString()}`);
+                                    }
+                                }
                             },
                         },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    xMin: '1997-01-01',
+                                    xMax: '1997-01-01',
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    borderWidth: 3,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        display: true,
+                                        content: '▲',
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                        font: {
+                                            size: 45,  
+                                            weight: 'bold' 
+                                        },
+                                        color: 'red',
+                                        position: 'start',
+                                        yAdjust: 30,
+                                        z: 10
+                                    }
+                                },
+                                line2: {
+                                    type: 'line',
+                                    xMin: '1997-01-01',
+                                    xMax: '1997-01-01',
+                                    borderColor: 'rgb(255, 99, 132)',
+                                    borderWidth: 3,
+                                    borderDash: [6, 6],
+                                    label: {
+                                        display: true,
+                                        content: '▼',
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                                        font: {
+                                            size: 45,
+                                            weight: 'bold'
+                                        },
+                                        color: 'red',
+                                        position: 'end',
+                                        yAdjust: -30
+                                    }
+                                }
+                            }
+                        }  
+                        
                     }
                 }
             });
