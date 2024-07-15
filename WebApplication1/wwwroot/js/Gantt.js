@@ -17,6 +17,8 @@
             if (this.startTime && this.endTime) {
                 console.log('Start Time:', this.startTime);
                 console.log('End Time:', this.endTime);
+                chartInstance.options.scales.x.min = start;
+                chartInstance.options.scales.x.max = end;
                 this.fetchGanttData();
             } else {
                 alert('請選時間範圍');
@@ -54,6 +56,50 @@
                 this.chartInstance.destroy();
             }
 
+            const zoomOptions = {
+                pan: {
+                    enabled: true,
+                    modifierKey: 'ctrl',
+                },
+                zoom: {
+                    wheel: {
+                        enabled: true,
+                        speed: 0.1,
+                    },
+                    pinch: {
+                        enabled: true,
+                        mode: 'x'
+                    },
+                    mode: 'x',
+                    drag: {
+                        enabled: true,
+                        modifierKey: 'shift',
+                        borderColor: 'rgba(54, 162, 235, 0.5)',
+                        borderWidth: 1,
+                        backgroundColor: 'rgba(54, 162, 235, 0.3)',
+                        animationDuration: 1000
+                    },
+                    onZoomComplete: ({ chart }) => {
+                        const min = chart.scales.x.min;
+                        const max = chart.scales.x.max;
+                        const range = max - min;
+
+                        if (range <= 1000 * 60) {
+                            chart.options.scales.x.time.unit = 'second';
+                        } else if (range <= 1000 * 60 * 60) {
+                            chart.options.scales.x.time.unit = 'minute';
+                        } else if (range <= 1000 * 60 * 60 * 24) {
+                            chart.options.scales.x.time.unit = 'hour';
+                        } else {
+                            chart.options.scales.x.time.unit = 'day';
+                        }
+
+                        console.log(`Zoom completed. New range: ${min} to ${max}`);
+                        chart.update();
+                    }
+                }
+            };
+
             this.chartInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -69,14 +115,17 @@
                         x: {
                             position: 'bottom',
                             type: 'time',
-                            min: '1996-01-01',
-                            max: '1998-12-31',
+                            min: this.startTime,
+                            max: this.endTime,
                             time: {
                                 unit: 'day',
                                 displayFormats: {
                                     day: 'MMM d, yyyy',
                                     month: 'MMM yyyy',
-                                    year: 'yyyy'
+                                    year: 'yyyy',
+                                    hour: 'HH:mm:ss',
+                                    minute: 'HH:mm:ss',
+                                    second: 'HH:mm:ss'
                                 }
                             },
                             ticks: {
@@ -94,39 +143,7 @@
                             display: false,
                             position: 'top'
                         },
-                        zoom: {
-                            pan: {
-                                enabled: true,
-                                mode: 'x'
-                            },
-                            zoom: {
-                                wheel: {
-                                    enabled: true,
-                                },
-                                pinch: {
-                                    enabled: true
-                                },
-                                mode: 'x',
-                                drag: {
-                                    enabled: true,
-                                    modifierKey: 'shift',
-                                    mode: 'x',
-                                    onDragStart: function ({ chart }) {
-                                        console.log('拖拽開始', chart);
-                                    },
-                                    onDrag: function ({ chart }) {
-                                        console.log('拖拽中', chart);
-                                    },
-                                    onDragEnd: function ({ chart, event }) {
-                                        console.log('拖拽結束', chart, event);
-                                        const xScale = chart.scales['x'];
-                                        const start = xScale.getValueForPixel(event.dragStartX);
-                                        const end = xScale.getValueForPixel(event.dragEndX);
-                                        alert(`選擇範圍: ${new Date(start).toISOString()} - ${new Date(end).toISOString()}`);
-                                    }
-                                }
-                            },
-                        },
+                        zoom: zoomOptions,
                         annotation: {
                             annotations: {
                                 line1: {

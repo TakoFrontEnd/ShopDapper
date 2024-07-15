@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "bTJkhIMqXeVaGj/vVV5XTrIOOIPRWSwxQGwu93emcViIqumieT7poiQgfTcJjCQFY4D+m803/O7f4OCWtjh1mw==",
+  "dgSpecHash": "ksphOZuyEhmEq3qenVJ/PusC3HPYHcFwb3w+vizK3WHjiSRwjNKk6v3P7oftL8RvgyqTRVLb05ABwI+2tv0RSg==",
   "success": true,
-  "projectFilePath": "A:\\FrontEnd\\ShopDapper\\WebApplication1\\WebApplication1.csproj",
+  "projectFilePath": "C:\\Users\\klas9\\OneDrive\\Documents\\GitHub\\ShopDapper\\WebApplication1\\WebApplication1.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\klas9\\.nuget\\packages\\dapper\\2.1.35\\dapper.2.1.35.nupkg.sha512",
     "C:\\Users\\klas9\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
