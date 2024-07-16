@@ -1,4 +1,4 @@
-﻿//GIT
+﻿//GIT2
 const GanttManage = Vue.createApp({
     data() {
         return {
