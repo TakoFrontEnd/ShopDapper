@@ -1,4 +1,5 @@
-﻿const GanttManage = Vue.createApp({
+﻿//GIT
+const GanttManage = Vue.createApp({
     data() {
         return {
             myChart: null,

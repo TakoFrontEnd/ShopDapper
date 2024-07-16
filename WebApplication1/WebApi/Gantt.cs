@@ -41,5 +41,15 @@ namespace WebApplication1.WebApi
                 return conn.Query<Object>(sql, parameters);
             }
         }
+
+        [HttpGet]
+        public IEnumerable<Object> GetCustomers()
+        {
+            var sql = @"SELECT TOP(5) CustomerID FROM Customers";
+            using (var conn = new SqlConnection(_connectString))
+            {
+                return conn.Query<Object>(sql);
+            }
+        }
     }
 }
