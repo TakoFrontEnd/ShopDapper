@@ -37,30 +37,35 @@
         background: white;
     }
 </style>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 
 <div id="app" class="chartCard">
     <div class="chartBox">
-        <canvas ref="myChart"></canvas>
-        <div class="mt-3">
-            <div class="input-group">
-                <input type="datetime-local" v-model="startTime" class="form-control input-sm" placeholder="開始時間">
-                <div class="input-group-prepend">
-                    <span class="input-group-text">~</span>
-                </div>
-                <input type="datetime-local" v-model="endTime" class="form-control input-sm" placeholder="結束時間">
-                <div class="input-group-append">
-                    <button class="btn btn-primary" v-on:click="applyTimeRange">搜尋</button>
-                    <button class="btn btn-secondary" v-on:click="toggleUpdate">{{ paused ? '開始更新' : '暫停更新' }}</button>
-                </div>
-            </div>
+        <mygantt ref="ganttChart"
+                 :startrangetime="MySelection.StartDateTime"
+                 :endrangetime="MySelection.EndDateTime"></mygantt>
+
+        <div class="input-group">
+            <input id="TimePicker" class="form-control input-sm" />
+            <input id="TimePickerStartTime" class="form-control input-sm" style="display:none" />
+            <input id="TimePickerEndTime" class="form-control input-sm" style="display:none" />
         </div>
+
         <div class="mt-3">
-            <button v-for="customer in customers" :key="customer" v-on:click="selectCustomer(customer)" class="btn btn-secondary">{{ customer }}</button>
+            <button v-for="customer in CustomerData" :key="customer" v-on:click="FetchCurrentTimeAndCustomerId(customer.CustomerID)" class="btn btn-secondary">{{ customer.CustomerID }}</button>
         </div>
+
+        <div class="mt-3">
+            <button  v-on:click="Search" class="btn btn-secondary">搜尋</button>
+        </div>
+
+
     </div>
 </div>
 
-
+@*style="display:none"*@
 
 <script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.prod.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
@@ -69,4 +74,5 @@
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@2.2.5/dist/chartjs-plugin-dragdata.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@latest"></script>
+<script src="~/js/components/mygantt.js"></script>
 <script src="~/js/Gantt.js"></script>

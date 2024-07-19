@@ -21,14 +21,24 @@ namespace WebApplication1.WebApi
         }
 
         [HttpGet]
-        public IEnumerable<Object> GetGanttDate(string OrderDate, string RequiredDate, string CustomerID)
+        public IEnumerable<Object> GetGanttData(string OrderDate, string RequiredDate, string CustomerID)
         {
             var startTime = Convert.ToDateTime(OrderDate);
             var endTime = Convert.ToDateTime(RequiredDate);
-            var sql = @"SELECT o.OrderID,o.OrderDate,o.RequiredDate,(od.UnitPrice * od.Quantity * 1-(Od.Discount))AS 'price',OrderStatus,OrderStatusID, CustomerID
+            var sql = @"SELECT o.OrderID,
+                        o.CustomerID,
+                        o.OrderDate,
+                        o.RequiredDate,
+                        (od.UnitPrice * od.Quantity * 1-(Od.Discount))AS 'price',
+                        OrderStatus,
+                        OrderStatusID, 
+                        CustomerID,
+                        [OrderStatus],
+                        [OrderStatusID],
+                        [StateColor]
                         FROM Orders o
                         LEFT JOIN [Order Details] Od On o.OrderID = Od.OrderID
-                        WHERE o.OrderDate >= @OrderDate AND o.RequiredDate < @RequiredDate AND　CustomerID = @CustomerID";
+                        WHERE o.OrderDate >= @OrderDate AND o.RequiredDate <= @RequiredDate AND　o.CustomerID = @CustomerID";
 
             var parameters = new {
                 OrderDate = startTime,
@@ -42,14 +52,26 @@ namespace WebApplication1.WebApi
             }
         }
 
+        // 呈現目前時間內的客戶 先設計5個就好
         [HttpGet]
-        public IEnumerable<Object> GetCustomers()
+        public IEnumerable<Object> GetTimeRangeCustomer(string OrderDate, string RequiredDate)
         {
-            var sql = @"SELECT TOP(5) CustomerID FROM Customers";
+            var sql = @"SELECT  DISTINCT TOP(5) CustomerID
+                        FROM [Northwind].[dbo].[Orders]
+                        WHERE OrderDate > @OrderDate AND  RequiredDate <= @RequiredDate";
+
+            var parameters = new
+            {
+                OrderDate = OrderDate,
+                RequiredDate = RequiredDate
+            };
+
             using (var conn = new SqlConnection(_connectString))
             {
-                return conn.Query<Object>(sql);
+                return conn.Query<Object>(sql, parameters);
             }
         }
+
+
     }
 }
