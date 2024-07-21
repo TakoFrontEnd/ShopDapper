@@ -45,7 +45,9 @@
     <div class="chartBox">
         <mygantt ref="ganttChart"
                  :startrangetime="MySelection.StartDateTime"
-                 :endrangetime="MySelection.EndDateTime"></mygantt>
+                 :endrangetime="MySelection.EndDateTime"
+                 :customerid="CustomerId">
+        </mygantt>
 
         <div class="input-group">
             <input id="TimePicker" class="form-control input-sm" />

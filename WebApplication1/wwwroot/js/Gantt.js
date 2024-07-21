@@ -2,8 +2,7 @@
     data() {
         return {
             CustomerData: [],
-            InitGanttData: [],
-            FormatGanttData: [],
+            GanttData: [],
             RequestData: [],
             CustomerId: '',
             MySelection: {
@@ -68,6 +67,9 @@
             console.log("2",this.MySelection.EndDateTime);
             console.log("3", customer)
 
+            this.CustomerId = customer;
+            $("canvas").attr("id", `MyGantt${customer}`);
+
             this.RequestData = [{
                 StartDateTime: this.MySelection.StartDateTime,
                 EndDateTime: this.MySelection.EndDateTime,
@@ -90,7 +92,10 @@
                     }
                 })
                     .then(response => {
-                        //從這裡開始思考
+                        this.GanttData = response.data;
+                        this.FormatData(this.GanttData);
+                        this.PushGanttChart(this.GanttData, this.RequestData[0].StartDateTime, this.RequestData[0].EndDateTime);
+                        console.log("Formatted GanttData", this.GanttData);
                     })
                     .catch(error => {
                         console.error('Error fetching data:', error);
@@ -98,28 +103,39 @@
             } else {
                 console.warn('RequestData is empty.');
             }
+
+           
         },
         FormatData(StatesData) {
+            this.GanttData = [];
             StatesData.forEach(d => {
-                if (!this.CustomerData[d.CustomerID]) {
-                    this.CustomerData[d.CustomerID] = [];
-                }
-
-                this.CustomerData[d.CustomerID].push({
+                this.GanttData.push({
                     x: [d.OrderDate, d.RequiredDate],
                     y: d.CustomerID,
                     backgroundColor: d.StateColor,
                     borderColor: d.StateColor,
-                    borderWidth: 2,
+                    borderWidth: 2.5,
+                    borderSkipped: false,
+                    borderRadius: 5,
+                    barPercentage: 0.8,
                     label: d.OrderStatusID
-                });
-            });
+                })
+            })
         },
+        PushGanttChart(StatesData, Time1, Time2) {
+            let ganttchart = this.$refs.ganttChart;
+            if (ganttchart) {
+                ganttchart.UpdateChart(StatesData, Time1, Time2);
+            } else {
+                console.warn('Gantt chart reference not found.');
+            }
+        }
     },
     beforeUnmount() {
-        // 可以在這裡添加任何需要在組件卸載前執行的代碼
     },
     mounted() {
         this.BulidDateTimeRange();
     }
 }).mount('#app');
+
+
