@@ -1,0 +1,74 @@
+﻿@{
+    Layout = "_Layout";
+}
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        font-family: sans-serif;
+    }
+
+    .chartMenu {
+        width: 100vw;
+        height: 40px;
+        background: #1A1A1A;
+        color: rgba(54, 162, 235, 1);
+    }
+
+        .chartMenu p {
+            padding: 10px;
+            font-size: 20px;
+        }
+
+    .chartCard {
+        width: 80vw;
+        height: calc(80vh - 40px);
+        background: rgba(245, 85, 85, 1);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .chartBox {
+        width: 900px;
+        padding: 20px;
+        border-radius: 20px;
+        border: solid 3px rgba(54, 162, 235, 1);
+        background: white;
+    }
+</style>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<div id="app" class="chartCard">
+    <div class="chartBox">
+        <canvas ref="lineChart" id="myChart"></canvas>
+        <div class="input-group">
+            <input id="TimePicker" class="form-control input-sm" />
+            <input id="TimePickerStartTime" class="form-control input-sm" style="display:none" />
+            <input id="TimePickerEndTime" class="form-control input-sm" style="display:none" />
+        </div>
+
+        <div class="mt-3">
+            <button v-for="customer in CustomerData" :key="customer" v-on:click="FetchCurrentTimeAndCustomerId(customer.CustomerID)" class="btn btn-secondary">{{ customer.CustomerID }}</button>
+        </div>
+
+        <div class="mt-3">
+            <button v-on:click="Search" class="btn btn-secondary">搜尋</button>
+        </div>
+
+
+    </div>
+</div>
+
+@*style="display:none"*@
+
+<script src="https://cdn.jsdelivr.net/npm/vue@3.2.47/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@2.2.5/dist/chartjs-plugin-dragdata.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/3.0.1/chartjs-plugin-annotation.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom@latest"></script>
+<script src="~/js/Line.js"></script>

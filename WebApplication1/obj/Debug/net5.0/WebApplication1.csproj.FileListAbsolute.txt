@@ -216,3 +216,4 @@ A:\FrontEnd\ShopDapper\WebApplication1\obj\Debug\net5.0\WebApplication1.dll
 A:\FrontEnd\ShopDapper\WebApplication1\obj\Debug\net5.0\ref\WebApplication1.dll
 A:\FrontEnd\ShopDapper\WebApplication1\obj\Debug\net5.0\WebApplication1.pdb
 A:\FrontEnd\ShopDapper\WebApplication1\obj\Debug\net5.0\WebApplication1.genruntimeconfig.cache
+A:\FrontEnd\ShopDapper\WebApplication1\obj\Debug\net5.0\Razor\Views\Line\Index.cshtml.g.cs

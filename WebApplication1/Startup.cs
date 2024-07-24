@@ -55,7 +55,7 @@ namespace WebApplication1
             {
                 endpoints.MapControllerRoute(
                     name: "default",
-                    pattern: "{controller=Gantt}/{action=Index}/{id?}");
+                    pattern: "{controller=Line}/{action=Index}/{id?}");
             });
         }
     }
